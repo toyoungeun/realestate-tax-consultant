@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatKRW } from '../../lib/taxCalculations.js';
+import { formatManwon } from '../../lib/taxCalculations.js';
 
 /**
  * 세금 계산 결과 공통 출력 컴포넌트.
@@ -14,7 +14,7 @@ export default function ResultDisplay({ result, primaryLabel }) {
         {primaryLabel || `${result.taxType} 예상 세액`}
       </div>
       <div className="mt-1 text-3xl font-bold text-brand-700 tabular-nums">
-        {formatKRW(result.total)}
+        {formatManwon(result.total)}
       </div>
       {result.meta?.effectiveRate !== undefined && (
         <div className="mt-1 text-xs text-brand-700/70">
@@ -40,7 +40,7 @@ export default function ResultDisplay({ result, primaryLabel }) {
               }`}
             >
               {item.amount < 0 ? '−' : ''}
-              {formatKRW(Math.abs(item.amount))}
+              {formatManwon(Math.abs(item.amount))}
             </div>
           </div>
         ))}

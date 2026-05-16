@@ -141,7 +141,7 @@ export function calculateAcquisitionTax(input) {
       ? ACQUISITION_TAX.firstTimeBuyer.maxReductionReducedArea
       : ACQUISITION_TAX.firstTimeBuyer.maxReduction;
     firstTimeDiscount = Math.min(maxDiscount, mainTax);
-    firstTimeNote = `생애최초 감면 -${formatKRW(firstTimeDiscount)} 적용 (한도 ${formatKRW(maxDiscount)})`;
+    firstTimeNote = `생애최초 감면 -${formatManwon(firstTimeDiscount)} 적용 (한도 ${formatManwon(maxDiscount)})`;
     mainTax -= firstTimeDiscount;
   }
   mainTax = Math.max(0, mainTax);
@@ -269,7 +269,7 @@ export function calculatePropertyTax(input) {
       {
         label: '재산세 본세',
         amount: round(mainTax),
-        note: `과세표준 ${formatKRW(taxBase)} × ${(rate * 100).toFixed(2)}% - 누진공제 ${formatKRW(deduction)}`,
+        note: `과세표준 ${formatManwon(taxBase)} × ${(rate * 100).toFixed(2)}% − 누진공제 ${formatManwon(deduction)}`,
       },
       {
         label: '지방교육세',
@@ -335,7 +335,7 @@ export function calculateComprehensivePropertyTax(input) {
         {
           label: '종부세',
           amount: 0,
-          note: `공시가격 합산이 기본공제(${formatKRW(deduction)}) 이하라 비과세`,
+          note: `공시가격 합산이 기본공제(${formatManwon(deduction)}) 이하라 비과세`,
         },
       ],
       meta: { taxableExists: false },
@@ -495,7 +495,7 @@ export function calculateCapitalGainsTax(input) {
         {
           label: '1세대1주택 비과세',
           amount: 0,
-          note: `양도가액 ${formatKRW(salePrice)} ≤ 12억, 보유 ${holdingYears}년, 거주 ${residenceYears}년 충족`,
+          note: `양도가액 ${formatManwon(salePrice)} ≤ 12억, 보유 ${holdingYears}년, 거주 ${residenceYears}년 충족`,
         },
       ],
       meta: { exempted: true, grossGain },
@@ -567,7 +567,7 @@ export function calculateCapitalGainsTax(input) {
       {
         label: '양도차익',
         amount: round(grossGain),
-        note: highPriceNote || `(양도가 ${formatKRW(salePrice)} − 취득가 ${formatKRW(acquisitionPrice)} − 경비 ${formatKRW(expenses)})`,
+        note: highPriceNote || `(양도가 ${formatManwon(salePrice)} − 취득가 ${formatManwon(acquisitionPrice)} − 경비 ${formatManwon(expenses)})`,
       },
       {
         label: '장기보유특별공제',
@@ -746,6 +746,27 @@ export function formatKRW(value) {
   return `${sign}${absV.toLocaleString()}원`;
 }
 
+/**
+ * 항상 만원 단위로 표시 (원 미만 절사, 만원 단위 반올림).
+ *   1,234,500 → "123만원"
+ *   850,000,000 → "8억 5,000만원"
+ *   3,000 → "0만원"
+ */
+export function formatManwon(value) {
+  if (value === null || value === undefined || Number.isNaN(value)) return '-';
+  const sign = value < 0 ? '-' : '';
+  const abs = Math.abs(value);
+  const manwon = Math.round(abs / UNIT.만);
+  if (manwon === 0) return `${sign}0만원`;
+  if (manwon >= 10000) {
+    const eok = Math.floor(manwon / 10000);
+    const man = manwon % 10000;
+    if (man === 0) return `${sign}${eok}억원`;
+    return `${sign}${eok}억 ${man.toLocaleString()}만원`;
+  }
+  return `${sign}${manwon.toLocaleString()}만원`;
+}
+
 export function formatPercent(value, digits = 2) {
   if (value === null || value === undefined || Number.isNaN(value)) return '-';
   return `${(value * 100).toFixed(digits)}%`;
@@ -759,5 +780,6 @@ export default {
   simulateOwnership,
   applyProgressiveBrackets,
   formatKRW,
+  formatManwon,
   formatPercent,
 };
