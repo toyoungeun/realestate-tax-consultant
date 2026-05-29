@@ -5,7 +5,19 @@ import {
   POLICY_CATEGORIES,
   KEY_CHANGES_2026,
 } from '../../data/policyData.js';
-import { META, REGULATED_AREAS } from '../../data/taxRates2026.js';
+import { META, REGULATED_AREAS, CAPITAL_GAINS_TAX } from '../../data/taxRates2026.js';
+
+// 오늘(KST) 기준 YYYY-MM-DD
+function todayKst() {
+  return new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+}
+
+// 두 날짜 사이 일수 차이
+function daysBetween(fromYmd, toYmd) {
+  const a = new Date(fromYmd + 'T00:00:00+09:00');
+  const b = new Date(toYmd + 'T00:00:00+09:00');
+  return Math.round((b - a) / (1000 * 60 * 60 * 24));
+}
 
 const IMPORTANCE_STYLES = {
   critical: 'border-red-300 bg-red-50',
@@ -15,11 +27,32 @@ const IMPORTANCE_STYLES = {
 };
 
 export default function PolicyTab() {
+  const today = todayKst();
+  const enforcementDate = CAPITAL_GAINS_TAX.multiHomeAdditional.enforcementDate;
+  const ddays = daysBetween(today, enforcementDate);
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
       {/* 헤더 */}
       <section className="bg-gradient-to-br from-brand-600 to-brand-700 text-white rounded-2xl p-6 shadow-sm">
-        <div className="text-sm opacity-80">기준 {META.baseYear}년 (최종 정리 {META.lastReviewed})</div>
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="text-sm opacity-80">
+            오늘 {today} · 기준 {META.baseYear}년 · 최종 정리 {META.lastReviewed}
+          </div>
+          {ddays > 0 ? (
+            <span className="text-xs px-2.5 py-1 rounded-full bg-white/20 backdrop-blur">
+              다주택자 양도세 중과 시행: {enforcementDate} (시행까지 {ddays}일 남음)
+            </span>
+          ) : ddays === 0 ? (
+            <span className="text-xs px-2.5 py-1 rounded-full bg-amber-300 text-amber-900 font-semibold">
+              ⚠️ 오늘({enforcementDate})부터 다주택자 양도세 중과 시행
+            </span>
+          ) : (
+            <span className="text-xs px-2.5 py-1 rounded-full bg-white/20 backdrop-blur">
+              다주택자 양도세 중과: {enforcementDate} 시행 ({Math.abs(ddays)}일 경과)
+            </span>
+          )}
+        </div>
         <h1 className="text-2xl md:text-3xl font-bold mt-1">{POLICY_OVERVIEW.title}</h1>
         <p className="mt-3 text-sm md:text-base text-white/90 leading-relaxed">
           {POLICY_OVERVIEW.summary}

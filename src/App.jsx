@@ -4,6 +4,11 @@ import PolicyTab from './components/tabs/PolicyTab.jsx';
 import CalculatorTab from './components/tabs/CalculatorTab.jsx';
 import NewsTab from './components/tabs/NewsTab.jsx';
 
+// 오늘(KST) 기준 YYYY-MM-DD — 항상 페이지를 연 시점의 실제 날짜
+function todayKstYmd() {
+  return new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+}
+
 const TABS = [
   { id: 'policy', label: '정책 정리', icon: '📋', Component: PolicyTab },
   { id: 'calculator', label: '세금 계산기', icon: '🧮', Component: CalculatorTab },
@@ -52,8 +57,15 @@ export default function App({ defaultTab = 'policy' }) {
               </p>
             </div>
           </div>
-          <div className="hidden sm:block text-xs text-slate-500">
-            🇰🇷 한국 아파트 전용
+          <div className="hidden sm:flex items-center gap-3 text-xs text-slate-500">
+            <span
+              className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100"
+              title="페이지를 연 시점의 KST 날짜입니다"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              기준일 {todayKstYmd()}
+            </span>
+            <span>🇰🇷 한국 아파트 전용</span>
           </div>
         </div>
       </header>

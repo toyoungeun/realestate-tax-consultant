@@ -16,7 +16,8 @@ export default function CapitalGainsTaxCalculator() {
     homeCount: 1,
     isOneHome: true,
     isRegulated: true,
-    saleDate: '2026-06-01',
+    // 양도일 기본값: 오늘 날짜 (KST 기준)
+    saleDate: new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10),
   });
   const update = (key, value) => setInput((p) => ({ ...p, [key]: value }));
 
