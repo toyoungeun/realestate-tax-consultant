@@ -37,7 +37,7 @@ export default function PolicyTab() {
       <section className="bg-gradient-to-br from-brand-600 to-brand-700 text-white rounded-2xl p-6 shadow-sm">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="text-sm opacity-80">
-            오늘 {today} · 기준 {META.baseYear}년 · 최종 정리 {META.lastReviewed}
+            오늘 {today} · {META.baseYear}년 세법 기준 · 페이지 접속 시 자동 갱신
           </div>
           {ddays > 0 ? (
             <span className="text-xs px-2.5 py-1 rounded-full bg-white/20 backdrop-blur">
@@ -133,7 +133,7 @@ export default function PolicyTab() {
           <CardHeader
             icon="📍"
             title="조정대상지역 현황"
-            subtitle={`최종 업데이트 ${REGULATED_AREAS.lastUpdated}`}
+            subtitle={`${today} 조회 기준 · 최신 현황은 국토교통부 공고 확인 권장`}
           />
           <CardBody>
             <div className="space-y-3">
